@@ -50,7 +50,7 @@ CodeWell integrates task management, scheduling, analytics, and wellness trackin
 
 ### 🔹 Database
 
-* *(Add your database here: MongoDB / MySQL / etc.)*
+* MongoDB
 
 ---
 
