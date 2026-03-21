@@ -1,0 +1,294 @@
+/* Wellness Page Styling */
+.wellness-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.wellness-header {
+  margin-bottom: 30px;
+}
+
+.wellness-header h1 {
+  color: var(--text-dark);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.wellness-header p {
+  color: var(--text-light);
+}
+
+.wellness-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 25px;
+}
+
+/* Mood Check-in Card */
+.mood-checkin-card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.mood-checkin-card h2 {
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-size: 1.3rem;
+}
+
+.mood-question {
+  margin-bottom: 15px;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.mood-options {
+  display: flex;
+  justify-content: space-around;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.mood-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  background: #F9F9F9;
+  border-radius: 12px;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  border: 3px solid transparent;
+  flex: 1;
+}
+
+.mood-btn:hover {
+  background: #F0F0F0;
+  transform: translateY(-5px);
+}
+
+.mood-btn.selected {
+  border-color: var(--primary-blue);
+  background: #E3F2FD;
+}
+
+.mood-emoji {
+  font-size: 3rem;
+}
+
+.mood-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.current-mood {
+  text-align: center;
+  padding: 15px;
+  background: #E3F2FD;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.current-mood-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 5px;
+}
+
+.current-mood-value {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--primary-blue);
+}
+
+/* Stress Level Card */
+.stress-level-card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.stress-level-card h2 {
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-size: 1.3rem;
+}
+
+.stress-meter {
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(135deg, #D5F5E3, #FCF3CF, #FADBD8);
+  border-radius: 12px;
+  margin-bottom: 20px;
+}
+
+.stress-emoji {
+  font-size: 4rem;
+  margin-bottom: 15px;
+}
+
+.stress-text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 10px;
+}
+
+.stress-description {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.stress-factors {
+  background: #F9F9F9;
+  padding: 15px;
+  border-radius: 8px;
+}
+
+.stress-factors h3 {
+  font-size: 1rem;
+  margin-bottom: 10px;
+  color: var(--text-dark);
+}
+
+.factors-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.factor-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+  color: var(--text-light);
+}
+
+/* Wellness Messages Card */
+.wellness-messages-card {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  grid-column: 1 / -1;
+}
+
+.wellness-messages-card h2 {
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-size: 1.3rem;
+}
+
+.messages-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.message-item {
+  padding: 20px;
+  border-radius: 8px;
+  display: flex;
+  align-items: flex-start;
+  gap: 15px;
+}
+
+.message-item.positive {
+  background: #E8F5E9;
+  border-left: 4px solid #4CAF50;
+}
+
+.message-item.warning {
+  background: #FFF9C4;
+  border-left: 4px solid #FFC107;
+}
+
+.message-item.info {
+  background: #E3F2FD;
+  border-left: 4px solid #2196F3;
+}
+
+.message-icon {
+  font-size: 1.8rem;
+}
+
+.message-content {
+  flex: 1;
+}
+
+.message-title {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 5px;
+  font-size: 1.05rem;
+}
+
+.message-text {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+/* Break Reminder Card */
+.break-reminder-card {
+  background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+  color: var(--white);
+  padding: 30px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+  grid-column: 1 / -1;
+}
+
+.break-reminder-card h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+}
+
+.break-timer {
+  font-size: 3rem;
+  font-weight: bold;
+  margin: 20px 0;
+}
+
+.break-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+
+.break-btn {
+  padding: 12px 25px;
+  background: rgba(255, 255, 255, 0.2);
+  color: var(--white);
+  border-radius: 8px;
+  font-weight: 600;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+}
+
+.break-btn:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mood-options {
+    flex-direction: column;
+  }
+  
+  .wellness-messages-card,
+  .break-reminder-card {
+    grid-column: 1;
+  }
+}

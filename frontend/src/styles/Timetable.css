@@ -1,0 +1,196 @@
+/* Timetable Page Styling */
+.timetable-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  animation: fadeIn 0.5s ease;
+}
+
+.timetable-header {
+  margin-bottom: 30px;
+}
+
+.timetable-header h1 {
+  color: var(--text-dark);
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.timetable-header p {
+  color: var(--text-light);
+}
+
+/* Info Cards */
+.timetable-info {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.info-card {
+  background: var(--white);
+  padding: 15px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  text-align: center;
+}
+
+.info-card-label {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-card-value {
+  font-size: 1.5rem;
+  font-weight: bold;
+  color: var(--primary-blue);
+}
+
+/* Timetable Section */
+.timetable-section {
+  background: var(--white);
+  padding: 25px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+}
+
+.timetable-section h2 {
+  margin-bottom: 20px;
+  color: var(--text-dark);
+  font-size: 1.3rem;
+}
+
+.timetable-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.time-slot {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  gap: 15px;
+  padding: 15px;
+  background: #F9F9F9;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  border-left: 4px solid transparent;
+}
+
+.time-slot:hover {
+  box-shadow: var(--shadow);
+  transform: translateX(5px);
+}
+
+.time-slot.work {
+  border-left-color: var(--primary-blue);
+}
+
+.time-slot.break {
+  border-left-color: var(--primary-green);
+  background: #F0FFF4;
+}
+
+.time-slot.focus {
+  border-left-color: var(--lavender);
+}
+
+.slot-time {
+  font-weight: 600;
+  color: var(--text-dark);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.slot-details {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.slot-title {
+  font-weight: 600;
+  color: var(--text-dark);
+  font-size: 1.05rem;
+}
+
+.slot-description {
+  color: var(--text-light);
+  font-size: 0.9rem;
+}
+
+.slot-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  margin-top: 5px;
+  width: fit-content;
+}
+
+.slot-tag.work {
+  background: #E3F2FD;
+  color: #2196F3;
+}
+
+.slot-tag.break {
+  background: #E8F5E9;
+  color: #4CAF50;
+}
+
+.slot-tag.focus {
+  background: #F3E5F5;
+  color: #9C27B0;
+}
+
+/* Wellness Tips */
+.wellness-tips {
+  background: linear-gradient(135deg, var(--primary-green), var(--primary-blue));
+  color: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  margin-top: 30px;
+}
+
+.wellness-tips h3 {
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.tips-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 8px;
+}
+
+.tip-icon {
+  font-size: 1.5rem;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .time-slot {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  
+  .slot-time {
+    padding-bottom: 10px;
+    border-bottom: 2px solid #E0E0E0;
+  }
+}
