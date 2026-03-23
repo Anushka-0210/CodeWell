@@ -22,14 +22,13 @@ const Login = ({ onLogin }) => {
     // Dummy authentication - accepts any email/password
     if (formData.email && formData.password) {
       // Store user info in localStorage (dummy)
-      localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userEmail', formData.email);
       
       // Call parent login handler
       onLogin();
       
       // Navigate to dashboard
-      navigate('/dashboard');
+      navigate('/');
     } else {
       alert('Please enter both email and password');
     }

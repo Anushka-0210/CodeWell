@@ -2,7 +2,7 @@ import React from 'react';
 import { Clock, Coffee, Lightbulb } from 'lucide-react';
 import '../styles/Timetable.css';
 
-const Timetable = ({ tasks }) => {
+const Timetable = ({ tasks = [] }) => {
   // Generate auto-timetable based on tasks
   const generateTimetable = () => {
     const pendingTasks = tasks.filter(task => task.status === 'pending');

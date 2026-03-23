@@ -4,7 +4,7 @@ import { initializeNotifications } from '../utils/notifications';
 import { calculateStressLevel } from '../utils/wellnessRules';
 import '../styles/Dashboard.css';
 
-const Dashboard = ({ tasks }) => {
+const Dashboard = ({ tasks = [] }) => {
   // Get current time-based greeting
   const getGreeting = () => {
     const hour = new Date().getHours();

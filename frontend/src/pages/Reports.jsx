@@ -3,7 +3,7 @@ import { CheckCircle, Clock, TrendingUp, Award } from 'lucide-react';
 import { calculateWellnessScore, calculateStressLevel } from '../utils/wellnessRules';
 import '../styles/Reports.css';
 
-const Reports = ({ tasks }) => {
+const Reports = ({ tasks = [] }) => {
   // Get current mood from localStorage
   const currentMood = localStorage.getItem('currentMood') || 'neutral';
 

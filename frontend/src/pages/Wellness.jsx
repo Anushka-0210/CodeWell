@@ -1,35 +1,74 @@
 import React, { useState, useEffect } from 'react';
-import { Smile, Meh, Frown, Heart } from 'lucide-react';
+import { Smile, Meh, Frown } from 'lucide-react';
 import WellnessCard from '../components/WellnessCard';
 import { calculateStressLevel, generateWellnessMessages } from '../utils/wellnessRules';
 import { showWellnessNotification } from '../utils/notifications';
+import { createWellnessLog, getCurrentStress, getLatestMood } from '../api/wellnessService';
 import '../styles/Wellness.css';
 
-const Wellness = ({ tasks }) => {
-  const [mood, setMood] = useState(localStorage.getItem('currentMood') || 'neutral');
+const Wellness = ({ tasks = [] }) => {
+  const [mood, setMood] = useState('neutral');
+  const [stressData, setStressData] = useState(null);
   const [breakTimer, setBreakTimer] = useState(0);
   const [isBreakActive, setIsBreakActive] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  // Calculate stress data
-  const stressData = calculateStressLevel(tasks);
+  // Fetch initial data
+  useEffect(() => {
+    const fetchWellnessData = async () => {
+      try {
+        // Get latest mood
+        const moodResponse = await getLatestMood();
+        if (moodResponse.success && moodResponse.data) {
+          setMood(moodResponse.data.mood);
+        }
+
+        // Get current stress
+        const stressResponse = await getCurrentStress();
+        if (stressResponse.success) {
+          setStressData(stressResponse.data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch wellness data:', error);
+        // Fallback to local calculation
+        setStressData(calculateStressLevel(tasks));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchWellnessData();
+  }, [tasks]);
 
   // Generate wellness messages
-  const wellnessMessages = generateWellnessMessages(mood, stressData);
+  const wellnessMessages = stressData 
+    ? generateWellnessMessages(mood, stressData)
+    : [];
 
   // Handle mood selection
-  const handleMoodChange = (selectedMood) => {
+  const handleMoodChange = async (selectedMood) => {
     setMood(selectedMood);
-    localStorage.setItem('currentMood', selectedMood);
 
-    // Show notification based on mood
-    if (selectedMood === 'sad') {
-      showWellnessNotification(
-        "It's okay to feel down. Take care of yourself and consider taking a break. 💙"
-      );
-    } else if (selectedMood === 'happy') {
-      showWellnessNotification(
-        "Great energy! Keep maintaining this positive balance. ✨"
-      );
+    try {
+      // Save to backend
+      await createWellnessLog({
+        mood: selectedMood,
+        stressLevel: stressData?.level || 'medium',
+        notes: `Mood updated to ${selectedMood}`,
+      });
+
+      // Show notification
+      if (selectedMood === 'sad') {
+        showWellnessNotification(
+          "It's okay to feel down. Take care of yourself and consider taking a break. 💙"
+        );
+      } else if (selectedMood === 'happy') {
+        showWellnessNotification(
+          "Great energy! Keep maintaining this positive balance. ✨"
+        );
+      }
+    } catch (error) {
+      console.error('Failed to save mood:', error);
     }
   };
 
@@ -67,6 +106,7 @@ const Wellness = ({ tasks }) => {
 
   // Get stress emoji
   const getStressEmoji = () => {
+    if (!stressData) return '😊';
     switch (stressData.level) {
       case 'low': return '😌';
       case 'medium': return '😐';
@@ -74,6 +114,10 @@ const Wellness = ({ tasks }) => {
       default: return '😊';
     }
   };
+
+  if (loading) {
+    return <div className="loading">Loading wellness data...</div>;
+  }
 
   return (
     <div className="wellness-container">
@@ -125,31 +169,33 @@ const Wellness = ({ tasks }) => {
         </div>
 
         {/* Stress Level */}
-        <div className="stress-level-card">
-          <h2>Stress Level</h2>
-          
-          <div className="stress-meter">
-            <div className="stress-emoji">{getStressEmoji()}</div>
-            <div className="stress-text">
-              {stressData.level.charAt(0).toUpperCase() + stressData.level.slice(1)} Stress
+        {stressData && (
+          <div className="stress-level-card">
+            <h2>Stress Level</h2>
+            
+            <div className="stress-meter">
+              <div className="stress-emoji">{getStressEmoji()}</div>
+              <div className="stress-text">
+                {stressData.level.charAt(0).toUpperCase() + stressData.level.slice(1)} Stress
+              </div>
+              <div className="stress-description">
+                Based on {stressData.pendingCount} pending tasks
+              </div>
             </div>
-            <div className="stress-description">
-              Based on {stressData.pendingCount} pending tasks
-            </div>
-          </div>
 
-          <div className="stress-factors">
-            <h3>Factors</h3>
-            <div className="factors-list">
-              {stressData.factors.map((factor, index) => (
-                <div key={index} className="factor-item">
-                  <span>•</span>
-                  <span>{factor}</span>
-                </div>
-              ))}
+            <div className="stress-factors">
+              <h3>Factors</h3>
+              <div className="factors-list">
+                {stressData.factors.map((factor, index) => (
+                  <div key={index} className="factor-item">
+                    <span>•</span>
+                    <span>{factor}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Wellness Messages */}
