@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Auth.css';
 
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const Login = ({ onLogin }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -18,7 +26,7 @@ const Login = ({ onLogin }) => {
 
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -32,9 +40,17 @@ const Login = ({ onLogin }) => {
       return;
     }
 
-    // Accept and store minimal non-sensitive info
-    localStorage.setItem('userEmail', formData.email);
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    const hashed = await hashPassword(formData.password);
+    const matchedUser = users.find((u) => u.email === formData.email && u.password === hashed);
 
+    if (!matchedUser) {
+      setError('Invalid credentials. Please register first or check your email/password.');
+      return;
+    }
+
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('currentUser', JSON.stringify({ email: matchedUser.email, name: matchedUser.name }));
     onLogin();
     setError('');
     navigate('/');

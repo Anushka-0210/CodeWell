@@ -2,6 +2,14 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import '../styles/Auth.css';
 
+async function hashPassword(password) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(password);
+  const hashBuffer = await window.crypto.subtle.digest('SHA-256', data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+}
+
 const Register = ({ onLogin }) => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
@@ -20,7 +28,7 @@ const Register = ({ onLogin }) => {
 
   const [error, setError] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -39,17 +47,27 @@ const Register = ({ onLogin }) => {
       return;
     }
 
-    if (formData.name && formData.email && formData.password) {
-      localStorage.setItem('isAuthenticated', 'true');
-      localStorage.setItem('userName', formData.name);
-      localStorage.setItem('userEmail', formData.email);
-
-      onLogin();
-      setError('');
-      navigate('/dashboard');
-    } else {
+    if (!formData.name || !formData.email || !formData.password) {
       setError('Please fill in all fields.');
+      return;
     }
+
+    const users = JSON.parse(localStorage.getItem('users') || '[]');
+    if (users.some((u) => u.email === formData.email)) {
+      setError('Email already registered. Please login.');
+      return;
+    }
+
+    const hashed = await hashPassword(formData.password);
+    users.push({ name: formData.name, email: formData.email, password: hashed });
+    localStorage.setItem('users', JSON.stringify(users));
+
+    localStorage.setItem('isAuthenticated', 'true');
+    localStorage.setItem('currentUser', JSON.stringify({ email: formData.email, name: formData.name }));
+
+    onLogin();
+    setError('');
+    navigate('/dashboard');
   };
 
   return (
