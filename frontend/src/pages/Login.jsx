@@ -16,22 +16,28 @@ const Login = ({ onLogin }) => {
     });
   };
 
+  const [error, setError] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Dummy authentication - accepts any email/password
-    if (formData.email && formData.password) {
-      // Store user info in localStorage (dummy)
-      localStorage.setItem('userEmail', formData.email);
-      
-      // Call parent login handler
-      onLogin();
-      
-      // Navigate to dashboard
-      navigate('/');
-    } else {
-      alert('Please enter both email and password');
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      return;
     }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long.');
+      return;
+    }
+
+    // Accept and store minimal non-sensitive info
+    localStorage.setItem('userEmail', formData.email);
+
+    onLogin();
+    setError('');
+    navigate('/');
   };
 
   return (
@@ -43,6 +49,7 @@ const Login = ({ onLogin }) => {
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
+          {error && <div className="auth-error">{error}</div>}
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input

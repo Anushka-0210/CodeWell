@@ -18,28 +18,37 @@ const Register = ({ onLogin }) => {
     });
   };
 
+  const [error, setError] = useState('');
+
   const handleSubmit = (e) => {
     e.preventDefault();
-    
-    // Basic validation
+
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(formData.email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     if (formData.password !== formData.confirmPassword) {
-      alert('Passwords do not match!');
+      setError('Passwords do not match.');
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long.');
       return;
     }
 
     if (formData.name && formData.email && formData.password) {
-      // Store user info in localStorage (dummy)
       localStorage.setItem('isAuthenticated', 'true');
       localStorage.setItem('userName', formData.name);
       localStorage.setItem('userEmail', formData.email);
-      
-      // Call parent login handler
+
       onLogin();
-      
-      // Navigate to dashboard
+      setError('');
       navigate('/dashboard');
     } else {
-      alert('Please fill in all fields');
+      setError('Please fill in all fields.');
     }
   };
 
@@ -52,6 +61,7 @@ const Register = ({ onLogin }) => {
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
+          {error && <div className="auth-error">{error}</div>}
           <div className="form-group">
             <label htmlFor="name">Full Name</label>
             <input

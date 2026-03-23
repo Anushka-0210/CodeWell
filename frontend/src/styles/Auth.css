@@ -76,6 +76,16 @@
   transition: all 0.3s ease;
 }
 
+.auth-error {
+  background: #fdecea;
+  border: 1px solid #f5c6cb;
+  border-radius: 8px;
+  color: #b71c1c;
+  font-weight: 600;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
 .auth-button:hover {
   background: #5A89BD;
   transform: translateY(-2px);
