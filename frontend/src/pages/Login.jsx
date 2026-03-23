@@ -56,27 +56,7 @@ const Login = ({ onLogin }) => {
     navigate('/');
   };
 
-  const handleGoogleLogin = () => {
-    // Simulated / mocked Google login
-    const googleUser = {
-      email: 'googleuser@example.com',
-      name: 'Google User'
-    };
 
-    localStorage.setItem('isAuthenticated', 'true');
-    localStorage.setItem('currentUser', JSON.stringify(googleUser));
-
-    // Also add user to localUsers for consistent behavior
-    const users = JSON.parse(localStorage.getItem('users') || '[]');
-    if (!users.some((u) => u.email === googleUser.email)) {
-      users.push({ ...googleUser, password: 'google-oauth' });
-      localStorage.setItem('users', JSON.stringify(users));
-    }
-
-    onLogin();
-    setError('');
-    navigate('/');
-  };
 
   return (
     <div className="auth-container">
@@ -116,15 +96,6 @@ const Login = ({ onLogin }) => {
 
           <button type="submit" className="auth-button">
             Login
-          </button>
-
-          <button
-            type="button"
-            className="auth-button auth-google"
-            onClick={handleGoogleLogin}
-            style={{ marginTop: '10px', background: '#4285F4', borderColor: '#4285F4' }}
-          >
-            Continue with Google
           </button>
         </form>
 
