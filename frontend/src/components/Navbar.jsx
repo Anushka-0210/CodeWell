@@ -20,7 +20,7 @@ const Navbar = ({ onLogout }) => {
       <div className="navbar-container">
         <div className="navbar-brand">
           <Heart className="brand-icon" />
-          <span className="brand-name">CodeWell</span>
+          <span className="brand-name">Planora</span>
         </div>
 
         <ul className="navbar-menu">

@@ -129,7 +129,7 @@ export const initializeNotifications = async () => {
   if (permission === 'granted') {
     console.log('Notifications enabled');
     // Show welcome notification
-    showNotification('🎉 Welcome to CodeWell', {
+    showNotification('🎉 Welcome to Planora', {
       body: 'Notifications are enabled. We\'ll remind you about deadlines and breaks.',
       tag: 'welcome'
     });

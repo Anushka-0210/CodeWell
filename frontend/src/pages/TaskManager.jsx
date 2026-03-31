@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Plus } from 'lucide-react';
 import TaskCard from '../components/TaskCard';
+import { createTask, deleteTask as deleteTaskAPI, toggleTaskStatus as toggleTaskAPI, updateTask as updateTaskAPI } from '../api/taskService';
 import '../styles/Tasks.css';
 
 const TaskManager = ({ tasks, setTasks }) => {
@@ -10,6 +11,8 @@ const TaskManager = ({ tasks, setTasks }) => {
     priority: 'medium',
     deadline: ''
   });
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState('');
 
   // Handle form input changes
   const handleInputChange = (e) => {
@@ -20,50 +23,89 @@ const TaskManager = ({ tasks, setTasks }) => {
   };
 
   // Add new task
-  const handleAddTask = (e) => {
+  const handleAddTask = async (e) => {
     e.preventDefault();
     
     if (!newTask.title || !newTask.deadline) {
-      alert('Please fill in all fields');
+      setError('Please fill in all fields');
       return;
     }
 
-    const task = {
-      id: Date.now(),
-      title: newTask.title,
-      priority: newTask.priority,
-      deadline: newTask.deadline,
-      status: 'pending',
-      createdAt: new Date().toISOString()
-    };
+    setLoading(true);
+    setError('');
 
-    setTasks([...tasks, task]);
-    
-    // Reset form
-    setNewTask({
-      title: '',
-      priority: 'medium',
-      deadline: ''
-    });
+    try {
+      const response = await createTask({
+        title: newTask.title,
+        priority: newTask.priority,
+        deadline: newTask.deadline,
+      });
+
+      if (response.success) {
+        // Add new task to the list
+        setTasks([response.data, ...tasks]);
+        
+        // Reset form
+        setNewTask({
+          title: '',
+          priority: 'medium',
+          deadline: ''
+        });
+      }
+    } catch (err) {
+      setError(err.message || 'Failed to create task');
+    } finally {
+      setLoading(false);
+    }
   };
 
   // Toggle task completion
-  const handleToggleComplete = (taskId) => {
-    setTasks(tasks.map(task => {
-      if (task.id === taskId) {
-        return {
-          ...task,
-          status: task.status === 'completed' ? 'pending' : 'completed'
-        };
+  const handleToggleComplete = async (taskId, currentStatus) => {
+    try {
+      const response = await toggleTaskAPI(taskId, currentStatus);
+      
+      if (response.success) {
+        // Update task in the list
+        setTasks(tasks.map(task => 
+          task._id === taskId ? { ...task, ...response.data } : task
+        ));
       }
-      return task;
-    }));
+    } catch (err) {
+      console.error('Failed to toggle task:', err);
+      alert('Failed to update task status');
+    }
   };
 
   // Delete task
-  const handleDeleteTask = (taskId) => {
+  const handleDeleteTask = async (taskId) => {
     if (window.confirm('Are you sure you want to delete this task?')) {
-      setTasks(tasks.filter(task => task.id !== taskId));
+      try {
+        const response = await deleteTaskAPI(taskId);
+        
+        if (response.success) {
+          // Remove task from list
+          setTasks(tasks.filter(task => task._id !== taskId));
+        }
+      } catch (err) {
+        console.error('Failed to delete task:', err);
+        alert('Failed to delete task');
+      }
+    }
+  };
+
+  // Update task title or details
+  const handleUpdateTask = async (taskId, updates) => {
+    try {
+      const response = await updateTaskAPI(taskId, updates);
+
+      if (response.success) {
+        setTasks(tasks.map(task =>
+          task._id === taskId ? { ...task, ...response.data } : task
+        ));
+      }
+    } catch (err) {
+      console.error('Failed to update task:', err);
+      alert('Failed to update task');
     }
   };
 
@@ -97,6 +139,20 @@ const TaskManager = ({ tasks, setTasks }) => {
       {/* Add Task Form */}
       <div className="add-task-section">
         <h2>Add New Task</h2>
+        
+        {error && (
+          <div style={{
+            background: '#FADBD8',
+            color: '#E74C3C',
+            padding: '12px',
+            borderRadius: '8px',
+            marginBottom: '15px',
+            fontSize: '0.9rem'
+          }}>
+            {error}
+          </div>
+        )}
+
         <form className="task-form" onSubmit={handleAddTask}>
           <div className="form-field">
             <label htmlFor="title">Task Title</label>
@@ -108,6 +164,7 @@ const TaskManager = ({ tasks, setTasks }) => {
               value={newTask.title}
               onChange={handleInputChange}
               required
+              disabled={loading}
             />
           </div>
 
@@ -118,6 +175,7 @@ const TaskManager = ({ tasks, setTasks }) => {
               name="priority"
               value={newTask.priority}
               onChange={handleInputChange}
+              disabled={loading}
             >
               <option value="low">Low</option>
               <option value="medium">Medium</option>
@@ -128,18 +186,19 @@ const TaskManager = ({ tasks, setTasks }) => {
           <div className="form-field">
             <label htmlFor="deadline">Deadline</label>
             <input
-              type="date"
+              type="datetime-local"
               id="deadline"
               name="deadline"
               value={newTask.deadline}
               onChange={handleInputChange}
               required
+              disabled={loading}
             />
           </div>
 
-          <button type="submit" className="add-task-btn">
+          <button type="submit" className="add-task-btn" disabled={loading}>
             <Plus size={20} />
-            Add Task
+            {loading ? 'Adding...' : 'Add Task'}
           </button>
         </form>
       </div>
@@ -198,10 +257,11 @@ const TaskManager = ({ tasks, setTasks }) => {
           ) : (
             filteredTasks.map(task => (
               <TaskCard
-                key={task.id}
+                key={task._id}
                 task={task}
                 onToggleComplete={handleToggleComplete}
                 onDelete={handleDeleteTask}
+                onUpdate={handleUpdateTask}
               />
             ))
           )}

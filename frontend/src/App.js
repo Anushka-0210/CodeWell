@@ -4,6 +4,8 @@ import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import Login from './pages/Login';
 import Register from './pages/Register';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 import Dashboard from './pages/Dashboard';
 import TaskManager from './pages/TaskManager';
 import CalendarPage from './pages/CalendarPage';
@@ -17,16 +19,27 @@ function App() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [tasks, setTasks] = useState([]);
 
+  const normalizeTask = (task) => {
+    const baseId = task._id ?? task.id ?? String(Date.now() + Math.random());
+    return {
+      ...task,
+      _id: task._id ?? task.id ?? baseId,
+      id: task.id ?? task._id ?? baseId,
+    };
+  };
+
   useEffect(() => {
     const authStatus = localStorage.getItem('isAuthenticated');
     setIsAuthenticated(authStatus === 'true');
 
     const savedTasks = localStorage.getItem('tasks');
     if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
+      const parsedTasks = JSON.parse(savedTasks);
+      setTasks(parsedTasks.map(normalizeTask));
     } else {
-      setTasks(dummyTasks);
-      localStorage.setItem('tasks', JSON.stringify(dummyTasks));
+      const normalizedTasks = dummyTasks.map(normalizeTask);
+      setTasks(normalizedTasks);
+      localStorage.setItem('tasks', JSON.stringify(normalizedTasks));
     }
   }, []);
 
@@ -59,10 +72,12 @@ function App() {
             <Routes>
               <Route path="/login" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Login onLogin={handleLogin} />} />
               <Route path="/register" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Register onLogin={handleLogin} />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/dashboard" element={<ProtectedRoute><Dashboard tasks={tasks} /></ProtectedRoute>} />
               <Route path="/tasks" element={<ProtectedRoute><TaskManager tasks={tasks} setTasks={setTasks} /></ProtectedRoute>} />
               <Route path="/calendar" element={<ProtectedRoute><CalendarPage tasks={tasks} /></ProtectedRoute>} />
-              <Route path="/timetable" element={<ProtectedRoute><Timetable tasks={tasks} /></ProtectedRoute>} />
+              <Route path="/timetable" element={<ProtectedRoute><Timetable tasks={tasks} setTasks={setTasks} /></ProtectedRoute>} />
               <Route path="/wellness" element={<ProtectedRoute><Wellness tasks={tasks} /></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><Reports tasks={tasks} /></ProtectedRoute>} />
               <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />

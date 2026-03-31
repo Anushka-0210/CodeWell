@@ -98,7 +98,7 @@ const CalendarPage = ({ tasks = [] }) => {
               </div>
             ) : (
               selectedDateTasks.map(task => (
-                <div key={task.id} className="date-task-item">
+                <div key={task._id || task.id} className="date-task-item">
                   <div className="date-task-title">{task.title}</div>
                   <div className="date-task-info">
                     <span className={`priority-badge ${task.priority}`}>

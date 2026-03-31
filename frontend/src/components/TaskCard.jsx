@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Calendar, AlertCircle } from 'lucide-react';
 
-const TaskCard = ({ task, onToggleComplete, onDelete }) => {
+const TaskCard = ({ task, onToggleComplete, onDelete, onUpdate }) => {
   // Calculate if task is urgent (within 24 hours)
   const isUrgent = () => {
     const deadline = new Date(task.deadline);
@@ -10,11 +10,46 @@ const TaskCard = ({ task, onToggleComplete, onDelete }) => {
     return hoursUntil <= 24 && hoursUntil > 0;
   };
 
-  // Format deadline date
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedTitle, setEditedTitle] = useState(task.title);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    setEditedTitle(task.title);
+  }, [task.title]);
+
+  // Format deadline date and time
   const formatDeadline = (dateString) => {
     const date = new Date(dateString);
-    const options = { month: 'short', day: 'numeric', year: 'numeric' };
-    return date.toLocaleDateString('en-US', options);
+    const options = {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+      hour: 'numeric',
+      minute: '2-digit',
+    };
+    return date.toLocaleString('en-US', options);
+  };
+
+  const handleEditSave = async () => {
+    if (!editedTitle.trim()) {
+      return;
+    }
+
+    if (!onUpdate) {
+      setIsEditing(false);
+      return;
+    }
+
+    setSaving(true);
+    await onUpdate(task._id, { title: editedTitle.trim() });
+    setSaving(false);
+    setIsEditing(false);
+  };
+
+  const handleCancel = () => {
+    setEditedTitle(task.title);
+    setIsEditing(false);
   };
 
   return (
@@ -24,11 +59,20 @@ const TaskCard = ({ task, onToggleComplete, onDelete }) => {
           type="checkbox"
           className="task-checkbox"
           checked={task.status === 'completed'}
-          onChange={() => onToggleComplete(task.id)}
+          onChange={() => onToggleComplete(task._id, task.status)}
         />
         
         <div className="task-details">
-          <div className="task-title">{task.title}</div>
+          {isEditing ? (
+            <input
+              className="task-title-input"
+              value={editedTitle}
+              onChange={(e) => setEditedTitle(e.target.value)}
+              disabled={saving}
+            />
+          ) : (
+            <div className="task-title">{task.title}</div>
+          )}
           <div className="task-meta">
             <span className={`priority-badge ${task.priority}`}>
               {task.priority}
@@ -48,12 +92,39 @@ const TaskCard = ({ task, onToggleComplete, onDelete }) => {
       </div>
 
       <div className="task-actions">
-        <button 
-          className="delete-btn" 
-          onClick={() => onDelete(task.id)}
-        >
-          Delete
-        </button>
+        {isEditing ? (
+          <>
+            <button
+              className="save-btn"
+              onClick={handleEditSave}
+              disabled={saving}
+            >
+              {saving ? 'Saving...' : 'Save'}
+            </button>
+            <button
+              className="cancel-btn"
+              onClick={handleCancel}
+              disabled={saving}
+            >
+              Cancel
+            </button>
+          </>
+        ) : (
+          <>
+            <button
+              className="edit-btn"
+              onClick={() => setIsEditing(true)}
+            >
+              Edit
+            </button>
+            <button 
+              className="delete-btn" 
+              onClick={() => onDelete(task._id)}
+            >
+              Delete
+            </button>
+          </>
+        )}
       </div>
     </div>
   );

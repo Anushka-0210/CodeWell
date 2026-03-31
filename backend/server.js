@@ -1,51 +1,75 @@
-// Main Server File
-// Initialize Express server and setup routes
-
-require('dotenv').config();
 const express = require('express');
+const dotenv = require('dotenv');
 const cors = require('cors');
 
-// Import routes
-const authRoutes = require('./routes/auth');
-const taskRoutes = require('./routes/tasks');
-const reportRoutes = require('./routes/reports');
-const wellnessRoutes = require('./routes/wellness');
+// Load environment variables
+dotenv.config();
 
-// Import database config
 const connectDB = require('./config/db');
+const { startTaskReminderScheduler } = require('./utils/taskReminder');
 
+// Connect to database
+connectDB().then(() => {
+  startTaskReminderScheduler();
+});
+
+// Initialize express app
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: process.env.CORS_ORIGIN || 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// TODO: Connect to database
-connectDB();
-
 // Routes
-app.use('/api/auth', authRoutes);
-app.use('/api/tasks', taskRoutes);
-app.use('/api/reports', reportRoutes);
-app.use('/api/wellness', wellnessRoutes);
+app.use('/api/auth', require('./routes/auth'));
+app.use('/api/tasks', require('./routes/tasks'));
+app.use('/api/wellness', require('./routes/wellness'));
+app.use('/api/reports', require('./routes/reports'));
 
-// Health check endpoint
+// Health check route
 app.get('/api/health', (req, res) => {
-  res.status(200).json({ message: 'Server is running' });
+  res.status(200).json({
+    success: true,
+    message: 'Mental Wellness API is running',
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something went wrong' });
+  res.status(err.statusCode || 500).json({
+    success: false,
+    message: err.message || 'Server Error',
+    stack: process.env.NODE_ENV === 'development' ? err.stack : undefined,
+  });
+});
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({
+    success: false,
+    message: 'Route not found',
+  });
 });
 
 // Start server
 const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`\n🚀 Server running in ${process.env.NODE_ENV} mode on port ${PORT}`);
+  console.log(`📡 API available at http://localhost:${PORT}/api`);
+  console.log(`💚 Health check: http://localhost:${PORT}/api/health\n`);
 });
 
-module.exports = app;
+// Handle unhandled promise rejections
+process.on('unhandledRejection', (err) => {
+  console.log(`❌ Error: ${err.message}`);
+  // Close server & exit process
+  process.exit(1);
+});
 

@@ -1,6 +1,6 @@
-# CodeWell Backend
+# Planora Backend
 
-A Node.js Express backend for the CodeWell application - a wellness and task management platform.
+A Node.js Express backend for the Planora application - a wellness and task management platform.
 
 ## Project Structure
 

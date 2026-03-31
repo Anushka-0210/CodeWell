@@ -254,13 +254,64 @@
   gap: 10px;
 }
 
+.task-title-input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid #E0E0E0;
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.task-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.edit-btn,
+.save-btn,
+.cancel-btn,
 .delete-btn {
   padding: 8px 12px;
-  background: #FADBD8;
-  color: #E74C3C;
   border-radius: 6px;
   font-size: 0.9rem;
   transition: all 0.3s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.edit-btn {
+  background: #E8F4FD;
+  color: #1565C0;
+}
+
+.edit-btn:hover {
+  background: #1565C0;
+  color: var(--white);
+}
+
+.save-btn {
+  background: #D4EDDA;
+  color: #2E7D32;
+}
+
+.save-btn:hover {
+  background: #2E7D32;
+  color: var(--white);
+}
+
+.cancel-btn {
+  background: #F5F5F5;
+  color: #616161;
+}
+
+.cancel-btn:hover {
+  background: #BDBDBD;
+  color: var(--white);
+}
+
+.delete-btn {
+  background: #FADBD8;
+  color: #E74C3C;
 }
 
 .delete-btn:hover {

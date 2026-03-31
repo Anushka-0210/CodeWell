@@ -1,4 +1,4 @@
-# 🚀 CodeWell – Smart Productivity & Task Management Platform
+# 🚀 Planora – Smart Productivity & Task Management Platform
 
 > A full-stack web application designed to streamline productivity, task management, and personal well-being through an intuitive and user-friendly interface.
 
@@ -20,13 +20,13 @@
 
 Managing daily tasks, schedules, and personal well-being across multiple platforms can be inefficient and overwhelming.
 
-**CodeWell solves this by providing a unified platform** where users can organize tasks, track progress, and maintain productivity—all in one place.
+**Planora solves this by providing a unified platform** where users can organize tasks, track progress, and maintain productivity—all in one place.
 
 ---
 
 ## 💡 Solution
 
-CodeWell integrates task management, scheduling, analytics, and wellness tracking into a single application, helping users:
+Planora integrates task management, scheduling, analytics, and wellness tracking into a single application, helping users:
 
 * Stay organized
 * Track performance
@@ -65,7 +65,7 @@ Frontend (React)  →  Backend (Node.js/Express)  →  Database
 ## 📂 Project Structure
 
 ```id="ap1wz7"
-CodeWell/
+Planora/
 │
 ├── frontend/
 │   ├── src/
@@ -89,8 +89,8 @@ CodeWell/
 ### 1️⃣ Clone Repository
 
 ```id="g1czha"
-git clone https://github.com/Anushka-0210/CodeWell.git
-cd CodeWell
+git clone https://github.com/Anushka-0210/Planora.git
+cd Planora
 ```
 
 ---

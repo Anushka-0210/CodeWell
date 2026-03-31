@@ -20,6 +20,85 @@
   color: var(--text-light);
 }
 
+.personalization-panel {
+  background: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+.panel-header h2 {
+  margin: 0;
+  font-size: 1.15rem;
+  color: var(--text-dark);
+}
+
+.panel-header p {
+  margin: 8px 0 0;
+  color: var(--text-light);
+  font-size: 0.95rem;
+}
+
+.settings-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.setting-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.setting-label {
+  font-size: 0.9rem;
+  color: var(--text-dark);
+  font-weight: 600;
+}
+
+.setting-toggle {
+  align-items: center;
+  display: flex;
+  gap: 10px;
+}
+
+.setting-row select,
+.setting-row input[type="text"],
+.setting-row input[type="checkbox"] {
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 0.95rem;
+  outline: none;
+}
+
+.setting-row input[type="text"] {
+  width: 100%;
+}
+
+.setting-row input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+}
+
+.setting-row button.primary-btn {
+  width: 100%;
+  padding: 12px 14px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary-blue);
+  color: var(--white);
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.setting-row button.primary-btn:hover {
+  background: #145ea8;
+}
+
 /* Info Cards */
 .timetable-info {
   display: grid;
@@ -147,6 +226,51 @@
 .slot-tag.focus {
   background: #F3E5F5;
   color: #9C27B0;
+}
+
+.add-task-panel {
+  background: var(--white);
+  padding: 20px;
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow);
+  margin-bottom: 25px;
+}
+
+.add-task-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.add-task-actions {
+  align-items: end;
+  display: flex;
+}
+
+.add-task-actions .primary-btn {
+  margin-top: auto;
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  background: var(--primary-blue);
+  color: var(--white);
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.add-task-actions .primary-btn:hover {
+  background: #145ea8;
+}
+
+.error-message {
+  margin-top: 20px;
+  padding: 15px;
+  border-radius: var(--border-radius);
+  background: #fdecea;
+  color: #b02a37;
+  border: 1px solid #f5c2c7;
 }
 
 /* Wellness Tips */

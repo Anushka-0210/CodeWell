@@ -8,11 +8,10 @@ const {
   deleteTask,
   toggleTaskStatus,
 } = require('../controllers/taskController');
-const auth = require('../middleware/auth');
-const protect = auth.protect;
+const { protect } = require('../middleware/auth');
 
 // All routes are protected
-router.use((req,res,next)=>{ const auth = require('../middleware/auth'); return auth.protect(req,res,next); });
+router.use(protect);
 
 router.route('/').get(getTasks).post(createTask);
 
@@ -21,5 +20,3 @@ router.route('/:id').get(getTask).put(updateTask).delete(deleteTask);
 router.patch('/:id/toggle', toggleTaskStatus);
 
 module.exports = router;
-
-

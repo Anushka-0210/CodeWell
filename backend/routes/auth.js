@@ -1,10 +1,8 @@
-﻿// Authentication Routes
 const express = require('express');
 const router = express.Router();
 const {
   register,
   login,
-  logout,
   getMe,
   updatePreferences,
 } = require('../controllers/authController');
@@ -15,7 +13,6 @@ router.post('/register', register);
 router.post('/login', login);
 
 // Protected routes
-router.post('/logout', protect, logout);
 router.get('/me', protect, getMe);
 router.put('/preferences', protect, updatePreferences);
 

@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
 import '../styles/Auth.css';
 
 async function hashPassword(password) {
@@ -24,7 +24,16 @@ const Login = ({ onLogin }) => {
     });
   };
 
+  const location = useLocation();
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+
+  useEffect(() => {
+    if (location.state?.successMessage) {
+      setSuccessMessage(location.state.successMessage);
+      window.history.replaceState({}, document.title);
+    }
+  }, [location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -67,7 +76,11 @@ const Login = ({ onLogin }) => {
         </div>
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          {error && <div className="auth-error">{error}</div>}
+          {(error || successMessage) && (
+            <div className={`auth-error ${successMessage ? 'auth-info' : ''}`}>
+              {error || successMessage}
+            </div>
+          )}
           <div className="form-group">
             <label htmlFor="email">Email Address</label>
             <input
@@ -99,6 +112,9 @@ const Login = ({ onLogin }) => {
           </button>
         </form>
 
+        <div className="auth-footer">
+          <Link to="/forgot-password">Forgot password?</Link>
+        </div>
         <div className="auth-footer">
           Don't have an account? <Link to="/register">Register here</Link>
         </div>
