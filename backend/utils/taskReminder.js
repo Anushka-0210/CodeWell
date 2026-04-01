@@ -1,7 +1,7 @@
 const cron = require('node-cron');
 const Task = require('../models/Task');
 const User = require('../models/User');
-const transporter = require('../config/nodemailer');
+const { sendEmail } = require('../config/nodemailer');
 
 const ONE_HOUR_MS = 60 * 60 * 1000;
 const TWENTY_FOUR_HOURS_MS = 24 * ONE_HOUR_MS;
@@ -61,7 +61,7 @@ const sendTaskReminderEmail = async (task, user, reminderType) => {
   };
 
   try {
-    await transporter.sendMail(mailOptions);
+    await sendEmail(mailOptions);
     console.log(`✅ Sent ${reminderType} reminder for task '${task.title}' to ${user.email}`);
   } catch (error) {
     console.error(`❌ Failed to send reminder for task '${task.title}':`, error.message);

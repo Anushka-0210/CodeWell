@@ -1,4 +1,10 @@
 const Task = require('../models/Task');
+const {
+  scheduleTask,
+  cancelTask,
+  updateTask: updateScheduledTask,
+  completeTask,
+} = require('../services/schedulerService');
 
 // @desc    Get all tasks for logged-in user
 // @route   GET /api/tasks
@@ -83,6 +89,21 @@ const createTask = async (req, res) => {
       deadline,
     });
 
+    const schedulePayload = {
+      id: task._id.toString(),
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      deadline: task.deadline,
+      status: task.status,
+    };
+
+    try {
+      await scheduleTask(schedulePayload, req.user.email);
+    } catch (scheduleError) {
+      console.error('Schedule task error:', scheduleError);
+    }
+
     res.status(201).json({
       success: true,
       data: task,
@@ -125,6 +146,21 @@ const updateTask = async (req, res) => {
       runValidators: true,
     });
 
+    const updatePayload = {
+      id: task._id.toString(),
+      title: task.title,
+      description: task.description,
+      priority: task.priority,
+      deadline: task.deadline,
+      status: task.status,
+    };
+
+    try {
+      await updateScheduledTask(updatePayload, req.user.email);
+    } catch (updateError) {
+      console.error('Update scheduler error:', updateError);
+    }
+
     res.status(200).json({
       success: true,
       data: task,
@@ -163,6 +199,12 @@ const deleteTask = async (req, res) => {
     }
 
     await task.deleteOne();
+
+    try {
+      await cancelTask(req.params.id);
+    } catch (cancelError) {
+      console.error('Cancel scheduler error:', cancelError);
+    }
 
     res.status(200).json({
       success: true,
@@ -203,6 +245,24 @@ const toggleTaskStatus = async (req, res) => {
 
     task.status = task.status === 'pending' ? 'completed' : 'pending';
     await task.save();
+
+    try {
+      if (task.status === 'completed') {
+        await completeTask(task._id.toString());
+      } else {
+        const restorePayload = {
+          id: task._id.toString(),
+          title: task.title,
+          description: task.description,
+          priority: task.priority,
+          deadline: task.deadline,
+          status: task.status,
+        };
+        await updateTask(restorePayload, req.user.email);
+      }
+    } catch (statusError) {
+      console.error('Task status scheduler error:', statusError);
+    }
 
     res.status(200).json({
       success: true,

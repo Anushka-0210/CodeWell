@@ -10,7 +10,7 @@ const ForgotPassword = () => {
   const [error, setError] = useState('');
   const [info, setInfo] = useState('');
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailPattern.test(email)) {
@@ -30,9 +30,6 @@ const ForgotPassword = () => {
     const otp = generateOTP();
     const expiration = Date.now() + 5 * 60 * 1000;
     localStorage.setItem('passwordReset', JSON.stringify({ email, otp, expiresAt: expiration }));
-
-    setInfo('A one-time code has been sent to your email address. Please enter it below.');
-    setError('');
 
     navigate('/reset-password', {
       state: {

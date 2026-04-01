@@ -12,6 +12,7 @@ import CalendarPage from './pages/CalendarPage';
 import Timetable from './pages/Timetable';
 import Wellness from './pages/Wellness';
 import Reports from './pages/Reports';
+import LandingPage from './pages/landing/LandingPage';
 import { dummyTasks } from './utils/dummyData';
 import './styles/App.css';
 
@@ -80,8 +81,9 @@ function App() {
               <Route path="/timetable" element={<ProtectedRoute><Timetable tasks={tasks} setTasks={setTasks} /></ProtectedRoute>} />
               <Route path="/wellness" element={<ProtectedRoute><Wellness tasks={tasks} /></ProtectedRoute>} />
               <Route path="/reports" element={<ProtectedRoute><Reports tasks={tasks} /></ProtectedRoute>} />
-              <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <Navigate to="/login" />} />
-              <Route path="*" element={<Navigate to={isAuthenticated ? '/dashboard' : '/login'} />} />
+              <Route path="/landing" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
+              <Route path="/" element={isAuthenticated ? <Navigate to="/dashboard" /> : <LandingPage />} />
+              <Route path="*" element={<Navigate to={isAuthenticated ? '/dashboard' : '/landing'} />} />
             </Routes>
           </main>
         </div>

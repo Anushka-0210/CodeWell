@@ -113,6 +113,9 @@ const Login = ({ onLogin }) => {
         </form>
 
         <div className="auth-footer">
+          <Link to="/landing">Back to landing page</Link>
+        </div>
+        <div className="auth-footer">
           <Link to="/forgot-password">Forgot password?</Link>
         </div>
         <div className="auth-footer">
